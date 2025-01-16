@@ -37,6 +37,8 @@ export default function NotebookDetailPage() {
     {
       id: '1',
       name: 'INF353H W25 Course Outline v1.0 - This is a very long file name that should truncate',
+      content: '',
+      size: 0,
       uploadedAt: new Date()
     }
   ])
@@ -44,7 +46,6 @@ export default function NotebookDetailPage() {
   const { toast } = useToast()
   const [isGenerating, setIsGenerating] = useState(false)
   const [isExtracting, setIsExtracting] = useState(false)
-  const [processedFiles, setProcessedFiles] = useState<FileItem[]>([])
 
   const handleRemoveFile = (fileId: string) => {
     setFiles(files.filter(file => file.id !== fileId))
@@ -56,14 +57,14 @@ export default function NotebookDetailPage() {
   }
 
   const handleFileProcessed = (file: FileItem) => {
-    setProcessedFiles(prev => [...prev, file])
+    setFiles(prev => [...prev, file])
   }
 
   const handleGenerateStudyGuide = async () => {
-    if (isGenerating || processedFiles.length === 0) {
+    if (isGenerating || files.length === 0) {
       toast({
         title: "No files to process",
-        description: "Please upload a syllabus or course material first",
+        description: "Please add files to your sources first",
         variant: "destructive"
       })
       return
@@ -71,7 +72,7 @@ export default function NotebookDetailPage() {
     
     try {
       setIsGenerating(true)
-      const fileContents = processedFiles.map(file => file.content).join('\n\n')
+      const fileContents = files.map(file => file.content).join('\n\n')
       
       const studyGuide = await generateStudyGuide(fileContents)
       setContent(studyGuide)
@@ -140,17 +141,7 @@ export default function NotebookDetailPage() {
               />
             </div>
 
-            <div className="flex-1">
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Type '/' for commands"
-                className="w-full h-[calc(100vh-300px)] bg-transparent text-neutral-200 text-base resize-none outline-none placeholder:text-neutral-500 leading-relaxed"
-                autoFocus
-              />
-            </div>
-
-            <div className="py-6 flex items-center gap-3">
+            <div className="pb-8 flex items-center gap-3">
               <button
                 onClick={handleGenerateStudyGuide}
                 disabled={isGenerating}
@@ -174,6 +165,16 @@ export default function NotebookDetailPage() {
                 <Calendar className="w-4 h-4" />
                 <span className="text-sm">{isExtracting ? "Extracting..." : "Extract Important Dates"}</span>
               </button>
+            </div>
+
+            <div className="flex-1">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Type '/' for commands"
+                className="w-full h-[calc(100vh-300px)] bg-transparent text-neutral-200 text-base resize-none outline-none placeholder:text-neutral-500 leading-relaxed"
+                autoFocus
+              />
             </div>
           </div>
         </div>

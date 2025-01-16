@@ -108,7 +108,17 @@ export function UploadDialog({
   }
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    for (const file of acceptedFiles) {
+    const newFiles = acceptedFiles.map(file => ({
+      name: file.name,
+      size: file.size,
+      status: 'uploading' as const,
+      progress: 0,
+      uploadedAt: new Date()
+    }))
+    
+    setUploadedFiles(prev => [...prev, ...newFiles])
+
+    for (const [index, file] of acceptedFiles.entries()) {
       try {
         setIsUploading(true)
         const content = await extractPdfContent(file)
@@ -123,20 +133,31 @@ export function UploadDialog({
         
         onFileProcessed(processedFile)
         
+        setUploadedFiles(prev => 
+          prev.map((f, i) => 
+            i === index ? { ...f, status: 'complete', progress: 100 } : f
+          )
+        )
+
         toast({
           title: "File processed successfully",
           description: file.name
         })
       } catch (error) {
+        setUploadedFiles(prev => 
+          prev.map((f, i) => 
+            i === index ? { ...f, status: 'error' } : f
+          )
+        )
+
         toast({
           title: "Error processing file",
           description: "Please try again",
           variant: "destructive"
         })
-      } finally {
-        setIsUploading(false)
       }
     }
+    setIsUploading(false)
   }, [onFileProcessed, toast])
 
   const { getRootProps, getInputProps, isDragActive, open: openFileDialog } = useDropzone({
