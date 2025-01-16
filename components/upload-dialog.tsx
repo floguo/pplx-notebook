@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Search, ChevronLeft, ChevronRight, X, Loader2, MoreHorizontal } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, X, Loader2, MoreHorizontal, MoreVertical } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,8 +22,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import * as pdfjsLib from 'pdfjs-dist'
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
+import { getDocument, GlobalWorkerOptions, PDFDocumentProxy } from 'pdfjs-dist/legacy/build/pdf';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
+
+// Configure the worker
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${getDocument.version}/pdf.worker.min.js`
 
 interface UploadDialogProps {
   open: boolean
@@ -95,17 +98,26 @@ export function UploadDialog({
   }, [activeTab, open])
 
   const extractPdfContent = async (file: File): Promise<string> => {
-    const arrayBuffer = await file.arrayBuffer()
-    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise
-    let content = ''
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i)
-      const textContent = await page.getTextContent()
-      content += textContent.items.map((item: any) => item.str).join(' ') + '\n'
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      let content = '';
+      
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+        content += pageText + '\n';
+      }
+      
+      return content;
+    } catch (error) {
+      console.error('PDF extraction error:', error);
+      throw new Error('Failed to extract PDF content');
     }
-    
-    return content
   }
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -221,11 +233,11 @@ export function UploadDialog({
             <div className="w-10 flex justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-1 hover:text-neutral-200">
-                    <MoreHorizontal className="w-4 h-4" />
+                  <button className="p-1 hover:bg-white/5 rounded-sm">
+                    <MoreVertical className="w-4 h-4 text-neutral-500 hover:text-neutral-400" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[140px]">
+                <DropdownMenuContent align="end" className="w-[140px] bg-[#1E1E1E] border-neutral-800">
                   <DropdownMenuItem 
                     className="text-neutral-400"
                     onClick={() => {
