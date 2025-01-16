@@ -27,6 +27,7 @@ interface UploadDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSyllabusProcessed: (data: any) => void
+  showUploadPrompt?: boolean
 }
 
 interface UploadedFile {
@@ -37,7 +38,12 @@ interface UploadedFile {
   uploadedAt: Date
 }
 
-export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: UploadDialogProps) {
+export function UploadDialog({ 
+  open, 
+  onOpenChange, 
+  onSyllabusProcessed,
+  showUploadPrompt 
+}: UploadDialogProps) {
   const [activeTab, setActiveTab] = useState<'files' | 'links'>('files')
   const filesRef = useRef<HTMLButtonElement>(null)
   const linksRef = useRef<HTMLButtonElement>(null)
@@ -68,6 +74,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
   }, [activeTab, open])
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    // Create new file entries
     const newFiles = acceptedFiles.map(file => ({
       name: file.name,
       size: file.size,
@@ -76,6 +83,10 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
       uploadedAt: new Date()
     }))
     
+    // Get the current length of files to offset the index
+    const currentLength = uploadedFiles.length
+    
+    // Append new files to existing ones
     setUploadedFiles(prev => [...prev, ...newFiles])
     
     // Process each file
@@ -85,7 +96,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
         const progressInterval = setInterval(() => {
           setUploadedFiles(files => 
             files.map((f, i) => 
-              i === index && f.status === 'uploading'
+              i === (currentLength + index) && f.status === 'uploading'
                 ? { ...f, progress: Math.min((f.progress || 0) + 10, 95) }
                 : f
             )
@@ -99,7 +110,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
         
         setUploadedFiles(files =>
           files.map((f, i) =>
-            i === index ? { ...f, status: 'complete', progress: 100 } : f
+            i === (currentLength + index) ? { ...f, status: 'complete', progress: 100 } : f
           )
         )
         
@@ -110,7 +121,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
       } catch (error) {
         setUploadedFiles(files =>
           files.map((f, i) =>
-            i === index ? { ...f, status: 'error' } : f
+            i === (currentLength + index) ? { ...f, status: 'error' } : f
           )
         )
         
@@ -121,7 +132,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
         })
       }
     })
-  }, [toast])
+  }, [toast, uploadedFiles.length])
 
   const { getRootProps, getInputProps, isDragActive, open: openFileDialog } = useDropzone({
     onDrop,
@@ -220,6 +231,12 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
       </div>
     )
   }
+
+  useEffect(() => {
+    if (showUploadPrompt && open) {
+      openFileDialog()
+    }
+  }, [showUploadPrompt, open, openFileDialog])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
