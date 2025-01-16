@@ -30,20 +30,20 @@ export default function StudyPage() {
   return (
     <Suspense fallback={<StudySkeleton />}>
       <div className="flex-1 flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/40">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800/40">
           <div className="flex items-center gap-3">
-            <GraduationCap className="w-6 h-6 text-gray-400" />
-            <h1 className="text-xl font-medium text-gray-200">Study</h1>
+            <GraduationCap className="w-6 h-6 text-neutral-400" />
+            <h1 className="text-xl font-medium text-neutral-200">Study</h1>
           </div>
-          <Button variant="outline" className="text-sm bg-transparent border-gray-800 text-gray-400 hover:text-gray-300 hover:bg-gray-800">
+          <Button variant="outline" className="text-sm bg-transparent border-neutral-800 text-neutral-400 hover:text-neutral-300 hover:bg-neutral-800">
             Learn More
           </Button>
         </div>
 
-        <div className="flex-1 px-6 py-8 max-w-[1400px] mx-auto w-full">
+        <div className="flex-1 px-6 py-8 max-w-3xl mx-auto w-full">
           <div className="space-y-8">
             <section>
-              <h2 className="text-lg font-medium text-gray-200 mb-4">My Study Plans</h2>
+              <h2 className="text-lg font-medium text-neutral-200 mb-4">My Study Plans</h2>
               <div className="grid gap-4">
                 {syllabusData ? (
                   <StudyCard
@@ -55,7 +55,7 @@ export default function StudyPage() {
                   <Button
                     variant="outline"
                     onClick={() => setIsDialogOpen(true)}
-                    className="w-full justify-start gap-2 p-6 text-base bg-[#1E1E1E] border-gray-800 hover:bg-[#252525] hover:border-gray-700 text-gray-400"
+                    className="w-full justify-start gap-2 p-6 text-base bg-[#1E1E1E] border-neutral-800 hover:bg-[#252525] hover:border-neutral-700 text-neutral-400"
                   >
                     <Plus className="w-5 h-5" />
                     Create a Study Plan
@@ -65,8 +65,8 @@ export default function StudyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-medium text-gray-200 mb-4">Examples</h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <h2 className="text-lg font-medium text-neutral-200 mb-4">Examples</h2>
+              <div className="flex flex-col gap-3">
                 <StudyCard
                   title="Computer Science Fundamentals"
                   icon={<Book className="w-5 h-5" />}

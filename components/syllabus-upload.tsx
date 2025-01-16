@@ -26,16 +26,16 @@ export function SyllabusUpload() {
   }
 
   return (
-    <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-800/60">
+    <div className="bg-neutral-800/50 rounded-lg p-6 border border-neutral-800/60">
       <div className="max-w-xl">
         <h2 className="text-xl font-semibold mb-2">Upload Your Syllabus</h2>
-        <p className="text-gray-400 mb-4">
+        <p className="text-neutral-400 mb-4">
           Upload your course syllabus to get started with a personalized study plan.
         </p>
         {syllabusData ? (
           <div>
             <h3 className="text-lg font-semibold mb-2">{syllabusData.courseName}</h3>
-            <p className="text-gray-400 mb-4">{syllabusData.courseDescription}</p>
+            <p className="text-neutral-400 mb-4">{syllabusData.courseDescription}</p>
             <Button
               onClick={() => setIsDialogOpen(true)}
               className="bg-[#21B8CD] hover:bg-[#1ea7ba] text-white btn-shrink"

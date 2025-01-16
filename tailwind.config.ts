@@ -7,6 +7,9 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ['FK Grotesk', 'system-ui', 'sans-serif'],
+    },
     extend: {
       colors: {
         background: 'hsl(var(--background))',
@@ -44,12 +47,11 @@ const config: Config = {
         ring: 'hsl(var(--ring))'
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
-      },
-      fontFamily: {
-        sans: ['FK Grotesk', 'system-ui', 'sans-serif'],
+        lg: '8px',
+        md: '6px',
+        sm: '4px',
+        xl: '10px',
+        '2xl': '12px'
       },
     }
   },

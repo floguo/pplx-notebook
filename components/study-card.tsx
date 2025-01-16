@@ -15,22 +15,22 @@ export function StudyCard({ title, icon, isPrivate, isNew, onClick }: StudyCardP
       className="w-full text-left p-4 rounded-xl bg-[#1E1E1E] hover:bg-[#252525] transition-colors group"
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-[#2A2A2A] flex items-center justify-center text-gray-400">
+        <div className="w-10 h-10 rounded-lg bg-[#2A2A2A] flex items-center justify-center text-neutral-400">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-gray-200 truncate group-hover:text-white transition-colors">
+          <h3 className="font-medium text-neutral-200 truncate group-hover:text-white transition-colors">
             {title}
           </h3>
           <div className="flex items-center gap-2 mt-1">
             {isNew && (
-              <div className="flex items-center gap-1 text-xs text-gray-400">
+              <div className="flex items-center gap-1 text-xs text-neutral-400">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Now</span>
               </div>
             )}
             {isPrivate && (
-              <div className="flex items-center gap-1 text-xs text-gray-400">
+              <div className="flex items-center gap-1 text-xs text-neutral-400">
                 <Lock className="w-3.5 h-3.5" />
                 <span>Private</span>
               </div>

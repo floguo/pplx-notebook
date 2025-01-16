@@ -10,7 +10,7 @@ export function StudySkeleton() {
       
       <div className="grid grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="rounded-xl border border-gray-800/40 bg-[#202020]/80 p-4">
+          <div key={i} className="rounded-xl border border-neutral-800/40 bg-[#202020]/80 p-4">
             <Skeleton className="h-4 w-3/4 mb-4" />
             <Skeleton className="h-4 w-1/2 mb-2" />
             <Skeleton className="h-4 w-5/6" />

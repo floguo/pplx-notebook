@@ -64,3 +64,13 @@
   background: #1A3B41;
   color: #21B8CD;
 }
+
+@layer components {
+  .btn-page-shrink {
+    transition: transform 0.1s ease;
+  }
+  
+  .btn-page-shrink:active {
+    transform: scale(0.97);
+  }
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
 
 interface UploadDialogProps {
   open: boolean
@@ -55,21 +56,21 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
               <div className="flex items-center gap-6">
                 <button
                   ref={filesRef}
-                  className={`text-sm font-medium py-2 ${activeTab === 'files' ? 'text-gray-200' : 'text-gray-500'}`}
+                  className={`text-sm font-medium py-2 ${activeTab === 'files' ? 'text-neutral-200' : 'text-neutral-500'}`}
                   onClick={() => setActiveTab('files')}
                 >
                   Files
                 </button>
                 <button
                   ref={linksRef}
-                  className={`text-sm font-medium py-2 ${activeTab === 'links' ? 'text-gray-200' : 'text-gray-500'}`}
+                  className={`text-sm font-medium py-2 ${activeTab === 'links' ? 'text-neutral-200' : 'text-neutral-500'}`}
                   onClick={() => setActiveTab('links')}
                 >
                   Links
                 </button>
               </div>
               <motion.div 
-                className="absolute bottom-0 left-0 h-0.5 bg-gray-200"
+                className="absolute bottom-0 left-0 h-0.5 bg-neutral-200"
                 animate={{ 
                   x: indicatorStyle.x,
                   width: indicatorStyle.width
@@ -94,7 +95,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
                 <div className="flex items-center gap-2 mb-4">
                   <div className="relative flex-1">
                     {activeTab === 'files' && (
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
                     )}
                     <motion.div
                       initial={{ width: "100%" }}
@@ -104,7 +105,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
                       <Input 
                         placeholder={activeTab === 'files' ? "Search files" : "Add your domain (i.e. example.com)"}
                         className={cn(
-                          "text-gray-200 w-full",
+                          "text-neutral-200 w-full",
                           activeTab === 'files' ? "pl-9" : "pl-3"
                         )}
                       />
@@ -121,7 +122,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
                         <Button className="bg-[#21B8CD] hover:bg-[#1ea7ba] text-black whitespace-nowrap">
                           + Add Files
                         </Button>
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-[#2A2A2A] rounded-lg py-1.5 px-3 text-sm text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-[#2A2A2A] rounded-lg py-1.5 px-3 text-sm text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                           Upload up to 50 documents, 25MB each
                         </div>
                       </div>
@@ -133,7 +134,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
                   </motion.div>
                 </div>
 
-                <div className="flex text-sm text-gray-400 pb-2">
+                <div className="flex text-sm text-neutral-400 pb-2">
                   {activeTab === 'files' ? (
                     <>
                       <div className="flex-[2]">Name</div>
@@ -149,7 +150,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
                   )}
                 </div>
 
-                <div className="h-[300px] flex items-center justify-center text-gray-500 text-sm">
+                <div className="h-[300px] flex items-center justify-center text-neutral-500 text-sm">
                   {activeTab === 'files' 
                     ? "Add some files to your space below"
                     : "Add some links to your space below"
@@ -159,14 +160,14 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
             </AnimatePresence>
           </div>
 
-          <div className="px-6 py-3 flex items-center justify-between text-sm text-gray-400 border-t border-gray-800">
+          <div className="px-6 py-3 flex items-center justify-between text-sm text-neutral-400 border-t border-neutral-800">
             <div>1 of 1</div>
             <div className="flex items-center gap-1">
-              <button className="flex items-center gap-0.5 px-1 py-0.5 hover:text-gray-300 disabled:opacity-50">
+              <button className="flex items-center gap-0.5 px-1 py-0.5 hover:text-neutral-300 disabled:opacity-50">
                 <ChevronLeft className="w-4 h-4" />
                 Prev
               </button>
-              <button className="flex items-center gap-0.5 px-1 py-0.5 hover:text-gray-300 disabled:opacity-50">
+              <button className="flex items-center gap-0.5 px-1 py-0.5 hover:text-neutral-300 disabled:opacity-50">
                 Next
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -174,6 +175,10 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
           </div>
         </div>
       </DialogContent>
+      <DialogPrimitive.Close className="ml-auto rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none">
+        <X className="h-5 w-5 text-neutral-400" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
     </Dialog>
   )
 }
