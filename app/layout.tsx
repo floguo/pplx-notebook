@@ -1,5 +1,8 @@
 import { Sidebar } from '@/components/sidebar'
 import '@/app/globals.css'
+import { Toaster } from 'sonner'
+import { AlertCircle, CheckCircle } from 'lucide-react'
+import { Footer } from '@/components/footer'
 
 export default function RootLayout({
   children,
@@ -13,26 +16,26 @@ export default function RootLayout({
           <Sidebar />
           <main className="flex-1 flex flex-col bg-[#191A1A] m-2 rounded-xl">
             {children}
-            <footer className="">
-              <div className="max-w-7xl mx-auto px-6 py-3">
-                <div className="flex justify-center items-center gap-6 text-sm">
-                  <div className="flex items-center gap-6 text-neutral-500">
-                    <a href="#" className="hover:text-neutral-300">Pro</a>
-                    <a href="#" className="hover:text-neutral-300">Enterprise</a>
-                    <a href="#" className="hover:text-neutral-300">Store</a>
-                    <a href="#" className="hover:text-neutral-300">Blog</a>
-                    <a href="#" className="hover:text-neutral-300">Careers</a>
-                  </div>
-                  <div className="flex items-center gap-6 text-neutral-500">
-                    <button className="hover:text-neutral-300">
-                      English (English)
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </footer>
+            <Footer />
           </main>
         </div>
+        <Toaster
+          position="bottom-right"
+          theme="dark"
+          toastOptions={{
+            style: {
+              background: '#1E1E1E',
+              border: '1px solid rgba(82, 82, 82, 0.3)',
+              color: 'rgba(229, 229, 229, 0.8)',
+            },
+            className: "gap-3",
+            descriptionClassName: "text-neutral-400/70",
+          }}
+          icons={{
+            success: <CheckCircle className="w-5 h-5 stroke-[1.5]" />,
+            error: <AlertCircle className="w-5 h-5 stroke-[1.5]" />
+          }}
+        />
       </body>
     </html>
   )

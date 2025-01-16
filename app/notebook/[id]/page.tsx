@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ChevronLeft, Plus, ChevronRight, ChevronDown, MoreVertical, Download, Trash2 } from 'lucide-react'
+import { ChevronLeft, Plus, ChevronRight, ChevronDown, MoreVertical, Download, Trash2, Calendar, Pen } from 'lucide-react'
 import { NoteEditor } from '@/components/note-editor'
 import { UploadDialog } from '@/components/upload-dialog'
 import {
@@ -12,11 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { motion, AnimatePresence } from 'framer-motion'
+import { generateStudyGuide, extractImportantDates } from '@/lib/gemini'
+import { useToast } from "@/components/ui/use-toast"
+import { cn } from "@/lib/utils"
 
 interface FileItem {
   id: string
   name: string
-  size?: number
+  content: string
+  size: number
   uploadedAt: Date
 }
 
@@ -37,6 +41,10 @@ export default function NotebookDetailPage() {
     }
   ])
   const [activeTab, setActiveTab] = useState<'files' | 'links'>('files')
+  const { toast } = useToast()
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isExtracting, setIsExtracting] = useState(false)
+  const [processedFiles, setProcessedFiles] = useState<FileItem[]>([])
 
   const handleRemoveFile = (fileId: string) => {
     setFiles(files.filter(file => file.id !== fileId))
@@ -45,6 +53,67 @@ export default function NotebookDetailPage() {
   const handleOpenUpload = (tab: 'files' | 'links') => {
     setActiveTab(tab)
     setIsUploadOpen(true)
+  }
+
+  const handleFileProcessed = (file: FileItem) => {
+    setProcessedFiles(prev => [...prev, file])
+  }
+
+  const handleGenerateStudyGuide = async () => {
+    if (isGenerating || processedFiles.length === 0) {
+      toast({
+        title: "No files to process",
+        description: "Please upload a syllabus or course material first",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    try {
+      setIsGenerating(true)
+      const fileContents = processedFiles.map(file => file.content).join('\n\n')
+      
+      const studyGuide = await generateStudyGuide(fileContents)
+      setContent(studyGuide)
+      
+      toast({
+        title: "Study guide generated",
+        description: "Your study guide is ready"
+      })
+    } catch (error) {
+      toast({
+        title: "Error generating study guide",
+        description: "Please try again later",
+        variant: "destructive"
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const handleExtractDates = async () => {
+    if (isExtracting) return
+    
+    try {
+      setIsExtracting(true)
+      const fileContents = files.map(file => file.content).join('\n\n')
+      
+      const dates = await extractImportantDates(fileContents)
+      setContent(prev => `${prev}\n\n## Important Dates\n${dates}`)
+      
+      toast({
+        title: "Dates extracted",
+        description: "Important dates have been added to your notes"
+      })
+    } catch (error) {
+      toast({
+        title: "Error extracting dates",
+        description: "Please try again later",
+        variant: "destructive"
+      })
+    } finally {
+      setIsExtracting(false)
+    }
   }
 
   return (
@@ -60,7 +129,7 @@ export default function NotebookDetailPage() {
 
       <div className="flex-1 flex">
         <div className="flex-1 px-8">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto flex flex-col min-h-0">
             <div className="pt-24 pb-8">
               <input
                 type="text"
@@ -71,14 +140,40 @@ export default function NotebookDetailPage() {
               />
             </div>
 
-            <div className="pt-16">
+            <div className="flex-1">
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Type '/' for commands"
-                className="w-full min-h-[calc(100vh-200px)] bg-transparent text-neutral-200 text-base resize-none outline-none placeholder:text-neutral-500 leading-relaxed"
+                className="w-full h-[calc(100vh-300px)] bg-transparent text-neutral-200 text-base resize-none outline-none placeholder:text-neutral-500 leading-relaxed"
                 autoFocus
               />
+            </div>
+
+            <div className="py-6 flex items-center gap-3">
+              <button
+                onClick={handleGenerateStudyGuide}
+                disabled={isGenerating}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-800/50 hover:bg-neutral-800 text-neutral-400 hover:text-neutral-300 transition-colors",
+                  "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-neutral-800/50 disabled:hover:text-neutral-400"
+                )}
+              >
+                <Pen className="w-4 h-4" />
+                <span className="text-sm">{isGenerating ? "Generating..." : "Generate Study Guide"}</span>
+              </button>
+
+              <button
+                onClick={handleExtractDates}
+                disabled={isExtracting}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-800/50 hover:bg-neutral-800 text-neutral-400 hover:text-neutral-300 transition-colors",
+                  "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-neutral-800/50 disabled:hover:text-neutral-400"
+                )}
+              >
+                <Calendar className="w-4 h-4" />
+                <span className="text-sm">{isExtracting ? "Extracting..." : "Extract Important Dates"}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -252,6 +347,7 @@ export default function NotebookDetailPage() {
       <UploadDialog
         open={isUploadOpen}
         onOpenChange={setIsUploadOpen}
+        onFileProcessed={handleFileProcessed}
         onSyllabusProcessed={(data) => {
           setIsUploadOpen(false)
         }}

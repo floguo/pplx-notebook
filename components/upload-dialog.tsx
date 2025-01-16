@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { PDFDocument } from 'pdf-lib'
 
 interface UploadDialogProps {
   open: boolean
@@ -29,6 +30,7 @@ interface UploadDialogProps {
   onSyllabusProcessed: (data: any) => void
   showUploadPrompt?: boolean
   defaultTab?: 'files' | 'links'
+  onFileProcessed: (file: ProcessedFile) => void
 }
 
 interface UploadedFile {
@@ -39,12 +41,21 @@ interface UploadedFile {
   uploadedAt: Date
 }
 
+interface ProcessedFile {
+  id: string
+  name: string
+  content: string
+  size: number
+  uploadedAt: Date
+}
+
 export function UploadDialog({ 
   open, 
   onOpenChange, 
   onSyllabusProcessed,
   showUploadPrompt,
-  defaultTab = 'files'
+  defaultTab = 'files',
+  onFileProcessed
 }: UploadDialogProps) {
   const [activeTab, setActiveTab] = useState<'files' | 'links'>(defaultTab)
   const filesRef = useRef<HTMLButtonElement>(null)
@@ -82,66 +93,51 @@ export function UploadDialog({
     return () => clearTimeout(timer)
   }, [activeTab, open])
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    // Create new file entries
-    const newFiles = acceptedFiles.map(file => ({
-      name: file.name,
-      size: file.size,
-      status: 'uploading' as const,
-      progress: 0,
-      uploadedAt: new Date()
-    }))
+  const extractPdfContent = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
     
-    // Get the current length of files to offset the index
-    const currentLength = uploadedFiles.length
+    let content = ''
+    for (const page of pages) {
+      const text = await page.getText()
+      content += text + '\n'
+    }
     
-    // Append new files to existing ones
-    setUploadedFiles(prev => [...prev, ...newFiles])
-    
-    // Process each file
-    acceptedFiles.forEach(async (file, index) => {
-      try {
-        // Simulate upload progress
-        const progressInterval = setInterval(() => {
-          setUploadedFiles(files => 
-            files.map((f, i) => 
-              i === (currentLength + index) && f.status === 'uploading'
-                ? { ...f, progress: Math.min((f.progress || 0) + 10, 95) }
-                : f
-            )
-          )
-        }, 200)
+    return content
+  }
 
-        // TODO: Replace with your actual upload logic
-        await new Promise(resolve => setTimeout(resolve, 2000))
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    for (const file of acceptedFiles) {
+      try {
+        setIsUploading(true)
+        const content = await extractPdfContent(file)
         
-        clearInterval(progressInterval)
+        const processedFile: ProcessedFile = {
+          id: Math.random().toString(36).substr(2, 9),
+          name: file.name,
+          content,
+          size: file.size,
+          uploadedAt: new Date()
+        }
         
-        setUploadedFiles(files =>
-          files.map((f, i) =>
-            i === (currentLength + index) ? { ...f, status: 'complete', progress: 100 } : f
-          )
-        )
+        onFileProcessed(processedFile)
         
         toast({
-          title: "File uploaded successfully",
+          title: "File processed successfully",
           description: file.name
         })
       } catch (error) {
-        setUploadedFiles(files =>
-          files.map((f, i) =>
-            i === (currentLength + index) ? { ...f, status: 'error' } : f
-          )
-        )
-        
         toast({
-          title: "Upload failed",
+          title: "Error processing file",
           description: "Please try again",
           variant: "destructive"
         })
+      } finally {
+        setIsUploading(false)
       }
-    })
-  }, [toast, uploadedFiles.length])
+    }
+  }, [onFileProcessed, toast])
 
   const { getRootProps, getInputProps, isDragActive, open: openFileDialog } = useDropzone({
     onDrop,
@@ -396,10 +392,7 @@ export function UploadDialog({
           </div>
         </div>
       </DialogContent>
-      <DialogPrimitive.Close className="ml-auto rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none">
-        <X className="h-5 w-5 text-neutral-400" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
+
     </Dialog>
   )
 }
