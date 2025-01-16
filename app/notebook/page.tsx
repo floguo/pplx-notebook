@@ -72,10 +72,10 @@ export default function NotebookPage() {
                   variant="outline"
                   onClick={handleCreateNotebook}
                   disabled={isCreating}
-                  className="w-full justify-start gap-2 p-6 text-base bg-[#202222]/80 border-neutral-800 hover:bg-[#202222] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
+                  className="w-full justify-start gap-2 p-6 btn-shrink btn-shrink-sm text-base bg-[#202222]/80 border-neutral-800 hover:bg-[#202222] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
                 >
                   <Plus className="w-5 h-5" />
-                  Create a Notebook
+                  Create new notebook
                 </Button>
               </div>
             </section>

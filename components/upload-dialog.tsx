@@ -26,7 +26,7 @@ import { getDocument, GlobalWorkerOptions, PDFDocumentProxy } from 'pdfjs-dist/l
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 
 // Configure the worker
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${getDocument.version}/pdf.worker.min.js`
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`
 
 interface UploadDialogProps {
   open: boolean

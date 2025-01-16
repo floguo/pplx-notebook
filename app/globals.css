@@ -30,6 +30,10 @@ body {
   transform: scale(0.96);
 }
 
+.btn-shrink-sm:active {
+  transform: scale(0.98);
+}
+
 input, textarea {
   caret-color: #21B8CD;
 }
