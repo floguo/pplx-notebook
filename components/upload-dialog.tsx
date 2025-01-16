@@ -33,19 +33,30 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
   const [activeTab, setActiveTab] = useState<'files' | 'links'>('files')
   const filesRef = useRef<HTMLButtonElement>(null)
   const linksRef = useRef<HTMLButtonElement>(null)
-  const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, x: 0 })
+  const [indicatorStyle, setIndicatorStyle] = useState({ width: 32, x: 0 })
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const { toast } = useToast()
 
+  // Combined effect for both initial position and tab changes
   useEffect(() => {
-    const activeRef = activeTab === 'files' ? filesRef : linksRef
-    if (activeRef.current) {
-      const { width, x } = activeRef.current.getBoundingClientRect()
-      const parentX = activeRef.current.parentElement?.getBoundingClientRect().x || 0
-      setIndicatorStyle({ width, x: x - parentX })
+    const updateIndicator = () => {
+      const activeRef = activeTab === 'files' ? filesRef : linksRef
+      if (activeRef.current) {
+        const { width, x } = activeRef.current.getBoundingClientRect()
+        const parentX = activeRef.current.parentElement?.getBoundingClientRect().x || 0
+        setIndicatorStyle({ width, x: x - parentX })
+      }
     }
-  }, [activeTab])
+
+    // Run immediately
+    updateIndicator()
+    
+    // Also run after a short delay to ensure DOM is ready
+    const timer = setTimeout(updateIndicator, 50)
+    
+    return () => clearTimeout(timer)
+  }, [activeTab, open])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
