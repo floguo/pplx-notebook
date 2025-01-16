@@ -11,11 +11,11 @@ export function Search() {
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4">
-      <h1 className="text-[44px] font-medium tracking-[-0.02em] mb-8 text-center text-[#E5E5E5]">
+      <h1 className="text-4xl font-light tracking-[-0.02em] mb-8 text-center text-[#E5E5E5]">
         What do you want to know?
       </h1>
       
-      <div className="rounded-2xl border border-neutral-700/30 bg-[#202020]/80">
+      <div className="rounded-lg border border-neutral-700/30 bg-[#202222]/90">
         <textarea
           placeholder="Ask anything..."
           value={inputValue}
@@ -23,13 +23,13 @@ export function Search() {
           className="w-full bg-transparent px-6 py-5 outline-none resize-none text-[17px] leading-normal text-neutral-200 placeholder:text-neutral-500/70"
           rows={1}
         />
-        <div className="flex items-center px-4 py-3 border-t border-neutral-800/40">
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-3 py-1.5 text-[13px] text-neutral-400/90 hover:bg-white/5 rounded-lg btn-shrink">
+        <div className="flex items-center px-3 py-3 border-t border-neutral-800/40">
+          <div className="flex items-center">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-[13px] text-neutral-400/90 hover:bg-white/5 rounded-full btn-shrink">
               <Focus className="w-4 h-4" />
               Focus
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-[13px] text-neutral-400/90 hover:bg-white/5 rounded-lg btn-shrink">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-[13px] text-neutral-400/90 hover:bg-white/5 rounded-full btn-shrink">
               <Paperclip className="w-4 h-4" />
               Attach
             </button>

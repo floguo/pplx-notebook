@@ -244,7 +244,7 @@ export default function NotebookDetailPage() {
                       e.stopPropagation()
                       handleOpenUpload('files')
                     }}
-                    className="h-5 px-2 rounded-full bg-neutral-800/50 hover:bg-neutral-800 flex items-center gap-1.5 group/button"
+                    className="h-5 px-1 rounded-full bg-neutral-800/50 hover:bg-neutral-800 flex items-center gap-1 group/button"
                   >
                     <Plus className="w-3 h-3 text-neutral-500 group-hover/button:text-neutral-300" />
                     <span className="text-xs text-neutral-500 group-hover/button:text-neutral-300">Add file</span>

@@ -22,9 +22,9 @@ export function NotebookCard({
   return (
     <div 
       onClick={onClick}
-      className="flex items-center gap-4 p-4 rounded-lg bg-[#1E1E1E] border border-neutral-800 hover:bg-[#252525] hover:border-neutral-700 cursor-pointer"
+      className="flex items-center gap-4 p-4 rounded-lg bg-[#202222]/50 border border-neutral-800 hover:bg-[#202222] hover:border-neutral-700 cursor-pointer"
     >
-      <div className="w-10 h-10 rounded-lg bg-[#2A2A2A] flex items-center justify-center text-neutral-400">
+      <div className="w-10 h-10 rounded-lg bg-blue-200/5 flex items-center justify-center text-neutral-400">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
