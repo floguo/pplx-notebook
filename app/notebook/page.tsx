@@ -1,47 +1,31 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { Book, Pencil, Plus } from 'lucide-react'
+import { Book, Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { NotebookCard } from '@/components/notebook-card'
-import { UploadDialog } from '@/components/upload-dialog'
 import { NotebookSkeleton } from '@/components/notebook-skeleton'
 
-interface SyllabusData {
-  courseName: string
-  courseDescription: string
-  studyPlan: Array<{
-    week: number
-    topic: string
-    description: string
-    estimatedHours: number
-  }>
+interface Notebook {
+  id: string
+  title: string
+  createdAt: Date
 }
 
 export default function NotebookPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [syllabusData, setSyllabusData] = useState<SyllabusData | null>(null)
-  const [plans, setPlans] = useState<Array<{ id: string; title: string }>>([])
-  const [showUploadPrompt, setShowUploadPrompt] = useState(false)
-
-  const handleSyllabusProcessed = (data: SyllabusData) => {
-    setSyllabusData(data)
-  }
+  const router = useRouter()
+  const [notebooks, setNotebooks] = useState<Notebook[]>([])
 
   const handleCreatePlan = () => {
-    const newPlan = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: "Untitled Plan"
+    const id = Math.random().toString(36).substr(2, 9)
+    const newNotebook = {
+      id,
+      title: "Untitled Notebook",
+      createdAt: new Date()
     }
-    setPlans(prev => [...prev, newPlan])
-    setShowUploadPrompt(true)
-    setIsDialogOpen(true)
-  }
-
-  const handleTitleChange = (id: string, newTitle: string) => {
-    setPlans(prev => prev.map(plan => 
-      plan.id === id ? { ...plan, title: newTitle } : plan
-    ))
+    setNotebooks(prev => [...prev, newNotebook])
+    router.push(`/notebook/${id}`)
   }
 
   return (
@@ -77,26 +61,23 @@ export default function NotebookPage() {
             <section>
               <h2 className="text-lg font-medium text-neutral-200 mb-4">My Notebooks</h2>
               <div className="space-y-3">
-                {plans.map(plan => (
+                {notebooks.map(notebook => (
                   <NotebookCard
-                    key={plan.id}
-                    title={plan.title}
+                    key={notebook.id}
+                    title={notebook.title}
                     icon={<Book className="w-5 h-5" />}
                     isNew
-                    isUntitled={plan.title === "Untitled Plan"}
-                    onTitleChange={(newTitle) => handleTitleChange(plan.id, newTitle)}
+                    onClick={() => router.push(`/notebook/${notebook.id}`)}
                   />
                 ))}
-                {plans.length === 0 && (
-                  <Button
-                    variant="outline"
-                    onClick={handleCreatePlan}
-                    className="w-full justify-start gap-2 p-6 text-base bg-[#252525] border-neutral-800 hover:bg-[#2A2A2A] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Create a Notebook
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  onClick={handleCreatePlan}
+                  className="w-full justify-start gap-2 p-6 text-base bg-[#252525] border-neutral-800 hover:bg-[#2A2A2A] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200"
+                >
+                  <Plus className="w-5 h-5" />
+                  Create a Notebook
+                </Button>
               </div>
             </section>
 
@@ -122,13 +103,6 @@ export default function NotebookPage() {
             </section>
           </div>
         </div>
-
-        <UploadDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          onSyllabusProcessed={handleSyllabusProcessed}
-          showUploadPrompt={showUploadPrompt}
-        />
       </div>
     </Suspense>
   )

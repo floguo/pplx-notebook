@@ -1,0 +1,262 @@
+'use client'
+
+import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { ChevronLeft, Plus, ChevronRight, ChevronDown, MoreVertical, Download, Trash2 } from 'lucide-react'
+import { NoteEditor } from '@/components/note-editor'
+import { UploadDialog } from '@/components/upload-dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { motion, AnimatePresence } from 'framer-motion'
+
+interface FileItem {
+  id: string
+  name: string
+  size?: number
+  uploadedAt: Date
+}
+
+export default function NotebookDetailPage() {
+  const router = useRouter()
+  const params = useParams()
+  const { id } = params
+  const [title, setTitle] = useState("New page")
+  const [content, setContent] = useState("")
+  const [isUploadOpen, setIsUploadOpen] = useState(false)
+  const [isFilesOpen, setIsFilesOpen] = useState(true)
+  const [isLinksOpen, setIsLinksOpen] = useState(true)
+  const [files, setFiles] = useState<FileItem[]>([
+    {
+      id: '1',
+      name: 'INF353H W25 Course Outline v1.0 - This is a very long file name that should truncate',
+      uploadedAt: new Date()
+    }
+  ])
+  const [activeTab, setActiveTab] = useState<'files' | 'links'>('files')
+
+  const handleRemoveFile = (fileId: string) => {
+    setFiles(files.filter(file => file.id !== fileId))
+  }
+
+  const handleOpenUpload = (tab: 'files' | 'links') => {
+    setActiveTab(tab)
+    setIsUploadOpen(true)
+  }
+
+  return (
+    <div className="flex-1 flex flex-col bg-[#191919]">
+      <div className="fixed top-8 left-6">
+        <button
+          onClick={() => router.push('/notebook')}
+          className="hover:bg-neutral-800/50 rounded-sm p-1.5 text-neutral-400 hover:text-neutral-300"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="flex-1 flex">
+        <div className="flex-1 px-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="pt-24 pb-8">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full text-4xl bg-transparent text-neutral-300 outline-none placeholder:text-neutral-500"
+                placeholder="Untitled"
+              />
+            </div>
+
+            <div className="pt-16">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Type '/' for commands"
+                className="w-full min-h-[calc(100vh-200px)] bg-transparent text-neutral-200 text-base resize-none outline-none placeholder:text-neutral-500 leading-relaxed"
+                autoFocus
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="w-80 border-l border-neutral-800">
+          <div className="p-6 space-y-8">
+            <div className="space-y-3">
+              <button className="w-full flex items-center justify-between group py-1.5">
+                <div className="flex items-center gap-2">
+                  <ChevronRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                  <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                    Instructions
+                  </div>
+                </div>
+                <Plus className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+              </button>
+              <div className="text-sm text-neutral-500 pl-6">No instructions added</div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Sources</div>
+              
+              <div className="space-y-3">
+                <button 
+                  onClick={() => setIsFilesOpen(!isFilesOpen)}
+                  className="w-full flex items-center justify-between group py-1.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <motion.div 
+                      animate={{ transform: `rotate(${isFilesOpen ? 0 : -90}deg)` }}
+                      transition={{ 
+                        duration: 0.15,
+                        ease: "easeInOut"
+                      }}
+                      style={{ 
+                        transformOrigin: "center",
+                        willChange: "transform"
+                      }}
+                    >
+                      <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                    </motion.div>
+                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                      Files
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleOpenUpload('files')
+                    }}
+                    className="h-5 px-2 rounded-full bg-neutral-800/50 hover:bg-neutral-800 flex items-center gap-1.5 group/button"
+                  >
+                    <Plus className="w-3 h-3 text-neutral-500 group-hover/button:text-neutral-300" />
+                    <span className="text-xs text-neutral-500 group-hover/button:text-neutral-300">Add file</span>
+                  </button>
+                </button>
+                <AnimatePresence mode="wait">
+                  {isFilesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-1 pl-6 overflow-hidden"
+                    >
+                      {files.map(file => (
+                        <motion.div
+                          key={file.id}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ 
+                            opacity: { duration: 0.2 },
+                            height: { duration: 0.2 },
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <motion.div 
+                            className="flex items-center w-full p-2 rounded-sm hover:bg-white/5 group"
+                            layout
+                          >
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <div className="text-sm text-neutral-300 group-hover:text-neutral-200 truncate">
+                                {file.name}
+                              </div>
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button className="p-1 rounded-sm hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <MoreVertical className="w-4 h-4 text-neutral-500 hover:text-neutral-400" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48 bg-[#1E1E1E] border-neutral-800">
+                                <DropdownMenuItem className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-300 focus:text-neutral-300 focus:bg-white/5">
+                                  <Download className="w-4 h-4" />
+                                  Download
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  onClick={() => handleRemoveFile(file.id)}
+                                  className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 focus:text-red-400 focus:bg-white/5"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                  Remove
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </motion.div>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {files.length === 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-sm text-neutral-500"
+                    >
+                      No files added
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="space-y-3">
+                <button 
+                  onClick={() => setIsLinksOpen(!isLinksOpen)}
+                  className="w-full flex items-center justify-between group py-1.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <motion.div 
+                      animate={{ transform: `rotate(${isLinksOpen ? 0 : -90}deg)` }}
+                      transition={{ 
+                        duration: 0.15,
+                        ease: "easeInOut"
+                      }}
+                      style={{ 
+                        transformOrigin: "center",
+                        willChange: "transform"
+                      }}
+                    >
+                      <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                    </motion.div>
+                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                      Links
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleOpenUpload('links')
+                    }}
+                    className="h-5 px-2 rounded-full bg-neutral-800/50 hover:bg-neutral-800 flex items-center gap-1.5 group/button"
+                  >
+                    <Plus className="w-3 h-3 text-neutral-500 group-hover/button:text-neutral-300" />
+                    <span className="text-xs text-neutral-500 group-hover/button:text-neutral-300">Add link</span>
+                  </button>
+                </button>
+                {isLinksOpen && (
+                  <div className="text-sm text-neutral-500 pl-6">No links added</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <UploadDialog
+        open={isUploadOpen}
+        onOpenChange={setIsUploadOpen}
+        onSyllabusProcessed={(data) => {
+          setIsUploadOpen(false)
+        }}
+        defaultTab={activeTab}
+      />
+    </div>
+  )
+} 

@@ -7,18 +7,23 @@ interface NotebookCardProps {
   isPrivate?: boolean
   isUntitled?: boolean
   onTitleChange?: (title: string) => void
+  onClick?: () => void
 }
 
 export function NotebookCard({ 
-  title = "Untitled Plan",
+  title = "Untitled Notebook",
   icon,
   isNew,
   isPrivate,
   isUntitled,
-  onTitleChange
+  onTitleChange,
+  onClick
 }: NotebookCardProps) {
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg bg-[#1E1E1E] border border-neutral-800 hover:bg-[#252525] hover:border-neutral-700">
+    <div 
+      onClick={onClick}
+      className="flex items-center gap-4 p-4 rounded-lg bg-[#1E1E1E] border border-neutral-800 hover:bg-[#252525] hover:border-neutral-700 cursor-pointer"
+    >
       <div className="w-10 h-10 rounded-lg bg-[#2A2A2A] flex items-center justify-center text-neutral-400">
         {icon}
       </div>

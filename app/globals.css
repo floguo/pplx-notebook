@@ -11,3 +11,13 @@
 body {
   font-family: var(--font-sans);
 }
+
+::selection {
+  background: #1A3B41;
+  color: #21B8CD;
+}
+
+::-moz-selection {
+  background: #1A3B41;
+  color: #21B8CD;
+}

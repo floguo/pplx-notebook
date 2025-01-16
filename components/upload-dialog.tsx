@@ -28,6 +28,7 @@ interface UploadDialogProps {
   onOpenChange: (open: boolean) => void
   onSyllabusProcessed: (data: any) => void
   showUploadPrompt?: boolean
+  defaultTab?: 'files' | 'links'
 }
 
 interface UploadedFile {
@@ -42,9 +43,10 @@ export function UploadDialog({
   open, 
   onOpenChange, 
   onSyllabusProcessed,
-  showUploadPrompt 
+  showUploadPrompt,
+  defaultTab = 'files'
 }: UploadDialogProps) {
-  const [activeTab, setActiveTab] = useState<'files' | 'links'>('files')
+  const [activeTab, setActiveTab] = useState<'files' | 'links'>(defaultTab)
   const filesRef = useRef<HTMLButtonElement>(null)
   const linksRef = useRef<HTMLButtonElement>(null)
   const [indicatorStyle, setIndicatorStyle] = useState({ width: 32, x: 0 })
@@ -52,6 +54,13 @@ export function UploadDialog({
   const [isUploading, setIsUploading] = useState(false)
   const { toast } = useToast()
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Reset active tab when dialog opens
+  useEffect(() => {
+    if (open) {
+      setActiveTab(defaultTab)
+    }
+  }, [open, defaultTab])
 
   // Combined effect for both initial position and tab changes
   useEffect(() => {
