@@ -10,12 +10,12 @@ export function Search() {
   const [inputValue, setInputValue] = useState('')
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4">
+    <div className="w-full max-w-3xl mx-auto center px-4">
       <h1 className="text-4xl font-light tracking-[-0.02em] mb-8 text-center text-[#E5E5E5]">
         What do you want to know?
       </h1>
       
-      <div className="rounded-lg border border-neutral-700/30 bg-[#202222]/90">
+      <div className="rounded-lg border max-w-2xl center mx-auto border-neutral-700 bg-[#202222]/90">
         <textarea
           placeholder="Ask anything..."
           value={inputValue}
@@ -46,8 +46,8 @@ export function Search() {
             <button 
               disabled={!inputValue.trim()}
               className={cn(
-                "w-8 h-8 flex items-center justify-center rounded-full bg-[#2D2D2D]/80 text-neutral-400/90 btn-shrink",
-                inputValue.trim() ? "hover:bg-[#333333]" : "opacity-50 cursor-not-allowed"
+                "w-8 h-8 flex items-center justify-center rounded-full bg-[#2D2D2D] text-neutral-400/90 btn-shrink",
+                inputValue.trim() ? "hover:bg-[#333333]" : "opacity-60 cursor-not-allowed text-neutral-500"
               )}
             >
               <ArrowRight className="w-4 h-4" />

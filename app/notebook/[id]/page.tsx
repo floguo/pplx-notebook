@@ -119,7 +119,7 @@ export default function NotebookDetailPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-[#191919]">
+    <div className="flex-1 flex flex-col bg-[#191919] rounded-xl">
       <div className="fixed top-8 left-6">
         <button
           onClick={() => router.push('/notebook')}

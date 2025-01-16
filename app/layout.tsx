@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <div className="flex min-h-screen bg-[#202222]">
           <Sidebar />
-          <main className="flex-1 flex flex-col bg-[#191A1A] m-2 rounded-xl">
+          <main className="flex-1 flex flex-col bg-[#191A1A] border border-neutral-800 m-3 rounded-xl">
             {children}
             {showFooter && <Footer />}
           </main>
