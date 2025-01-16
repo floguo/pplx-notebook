@@ -1,76 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'FK Grotesk';
-  src: url('/fonts/FKGroteskNeueTrial-Thin.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-@font-face {
-  font-family: 'FK Grotesk';
-  src: url('/fonts/FKGroteskTrial-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@layer base {
-  :root {
-    --background: 180 2% 13%;
-    --foreground: 180 2% 10%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --radius: 0.5rem;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  
-  /* Add cursor color */
-  textarea, input {
-    caret-color: #21B8CD;
-  }
-}
-
-::selection {
-  background: #1A3B41;
-  color: #21B8CD;
-}
-
-::-moz-selection {
-  background: #1A3B41;
-  color: #21B8CD;
-}
-
-@layer components {
-  .btn-page-shrink {
-    transition: transform 0.1s ease;
-  }
-  
-  .btn-page-shrink:active {
-    transform: scale(0.97);
-  }
+body {
+  font-family: var(--font-sans);
 }
