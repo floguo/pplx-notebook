@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ChevronLeft, Plus, ChevronRight, ChevronDown, MoreVertical, Download, Trash2, Calendar, Pen } from 'lucide-react'
+import { ChevronLeft, Plus, ChevronRight, ChevronDown, MoreVertical, Download, Trash2, Calendar, Pen, HelpCircle } from 'lucide-react'
 import { NoteEditor } from '@/components/note-editor'
 import { UploadDialog } from '@/components/upload-dialog'
 import {
@@ -15,6 +15,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { generateStudyGuide, extractImportantDates } from '@/lib/gemini'
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface FileItem {
   id: string
@@ -195,7 +201,7 @@ export default function NotebookDetailPage() {
                   >
                     <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
                   </motion.div>
-                  <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                  <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
                     Instructions
                   </div>
                 </div>
@@ -220,8 +226,24 @@ export default function NotebookDetailPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Sources</div>
-              
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
+                  Sources
+                </h3>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="p-1 rounded-full hover:bg-white/5">
+                        <HelpCircle className="w-3.5 h-3.5 text-neutral-500 hover:text-neutral-400" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="bg-[#2A2A2A] border-neutral-800 text-neutral-400 text-sm max-w-[300px]">
+                      Add files and links to create a persistent knowledge base. Your notebook will use these sources as context when answering questions, similar to Perplexity spaces but with greater longevity and organization.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
               <div className="space-y-3">
                 <button 
                   onClick={() => setIsFilesOpen(!isFilesOpen)}
@@ -235,7 +257,7 @@ export default function NotebookDetailPage() {
                     >
                       <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
                     </motion.div>
-                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono group-hover:text-neutral-300">
                       Files
                     </div>
                   </div>
@@ -327,7 +349,7 @@ export default function NotebookDetailPage() {
                     >
                       <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
                     </motion.div>
-                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
+                    <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono group-hover:text-neutral-300">
                       Links
                     </div>
                   </div>

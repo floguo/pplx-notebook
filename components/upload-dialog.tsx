@@ -282,69 +282,23 @@ export function UploadDialog({
       <DialogContent className="max-w-2xl">
         <div className="flex-1">
           <div className="p-4">
-            <div className="flex items-center gap-2 mb-6">
-              <h2 className="text-lg font-medium text-neutral-200">Sources</h2>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="p-1 rounded-full hover:bg-white/5">
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-neutral-500">
-                        <path
-                          d="M7.5 1.75a5.75 5.75 0 100 11.5 5.75 5.75 0 000-11.5zM.75 7.5a6.75 6.75 0 1113.5 0 6.75 6.75 0 01-13.5 0zm7.25-2a.5.5 0 11-1 0 .5.5 0 011 0zm-2.5 2.75v-1h2v3.5h-1v1h3v-1h-1v-3.5h2v1h1v-2h-6v2h1z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-[#2A2A2A] border-neutral-800 text-neutral-400 text-sm max-w-[300px]">
-                    Add files and links to create a persistent knowledge base.<br/>
-                    Your notebook will use these sources as context when<br/>
-                    answering questions, similar to Perplexity spaces but with<br/>
-                    greater longevity and organization.
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
 
             <div className="relative mb-6">
               <div className="flex items-center gap-6">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        ref={filesRef}
-                        className={`text-sm font-medium py-2 ${activeTab === 'files' ? 'text-neutral-200' : 'text-neutral-500'}`}
-                        onClick={() => setActiveTab('files')}
-                      >
-                        Files
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#2A2A2A] border-neutral-800 text-neutral-400 text-sm">
-                      Upload PDFs to create a knowledge base.<br/>
-                      Your notebook will use these files as context<br/>
-                      when answering your questions.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        ref={linksRef}
-                        className={`text-sm font-medium py-2 ${activeTab === 'links' ? 'text-neutral-200' : 'text-neutral-500'}`}
-                        onClick={() => setActiveTab('links')}
-                      >
-                        Links
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#2A2A2A] border-neutral-800 text-neutral-400 text-sm">
-                      Add website URLs to include in your notebook.<br/>
-                      The content will be referenced when you ask<br/>
-                      questions about related topics.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <button
+                  ref={filesRef}
+                  className={`text-sm font-medium py-2 ${activeTab === 'files' ? 'text-neutral-200' : 'text-neutral-500'}`}
+                  onClick={() => setActiveTab('files')}
+                >
+                  Files
+                </button>
+                <button
+                  ref={linksRef}
+                  className={`text-sm font-medium py-2 ${activeTab === 'links' ? 'text-neutral-200' : 'text-neutral-500'}`}
+                  onClick={() => setActiveTab('links')}
+                >
+                  Links
+                </button>
               </div>
               <motion.div 
                 className="absolute bottom-0 left-0 h-0.5 bg-neutral-200"
