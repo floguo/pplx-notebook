@@ -1,0 +1,26 @@
+:root {
+  --background: #1C1C1C;
+  --foreground: #161616;
+}
+
+.btn-page-shrink {
+  transition: transform 0.1s ease-in-out;
+}
+
+.btn-page-shrink:active {
+  transform: scale(0.95);
+}
+
+.btn-shrink {
+  transition: transform 0.1s ease-in-out;
+}
+
+.btn-shrink:active {
+  transform: scale(0.95);
+}
+
+body {
+  background-color: var(--background);
+  color: #E5E5E5;
+}
+
