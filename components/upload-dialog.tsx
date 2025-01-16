@@ -171,7 +171,7 @@ export function UploadDialog({ open, onOpenChange, onSyllabusProcessed }: Upload
             </AnimatePresence>
           </div>
 
-          <div className="px-6 py-3 flex items-center justify-between text-sm text-neutral-400 border-t border-neutral-800">
+          <div className="pl-6 pr-3 py-6 flex items-center justify-between text-sm text-neutral-400 border-t border-neutral-800">
             <div>1 of 1</div>
             <div className="flex items-center gap-1">
               <button className="flex items-center gap-0.5 px-1 py-0.5 hover:text-neutral-300 disabled:opacity-50">

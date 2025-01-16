@@ -40,8 +40,8 @@ const DialogContent = React.forwardRef<
       )}
       {...props}
     >
-      <div className="px-6 py-4 flex items-center">
-        <div className="flex items-center gap-2 text-[20px] font-medium text-neutral-200">
+      <div className="pl-4 pr-6 py-4 flex items-center">
+        <div className="flex items-center gap-4 text-3xl text-neutral-200">
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
             <path d="M13 2v7h7" />
