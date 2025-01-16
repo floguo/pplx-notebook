@@ -53,9 +53,18 @@ const config: Config = {
         xl: '10px',
         '2xl': '12px'
       },
+      keyframes: {
+        in: {
+          '0%': { opacity: '0', transform: 'translateY(-4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        }
+      },
+      animation: {
+        'in': 'in 0.2s ease-out forwards'
+      }
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 };
 
 export default config;

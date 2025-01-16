@@ -33,6 +33,7 @@ export default function NotebookDetailPage() {
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [isFilesOpen, setIsFilesOpen] = useState(true)
   const [isLinksOpen, setIsLinksOpen] = useState(true)
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true)
   const [files, setFiles] = useState<FileItem[]>([
     {
       id: '1',
@@ -182,16 +183,40 @@ export default function NotebookDetailPage() {
         <div className="w-80 border-l border-neutral-800">
           <div className="p-6 space-y-8">
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-between group py-1.5">
+              <button 
+                onClick={() => setIsInstructionsOpen(!isInstructionsOpen)}
+                className="w-full flex items-center justify-between group py-1.5"
+              >
                 <div className="flex items-center gap-2">
-                  <ChevronRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                  <motion.div 
+                    animate={{ transform: `rotate(${isInstructionsOpen ? 0 : -90}deg)` }}
+                    transition={{ duration: 0.15, ease: "easeInOut" }}
+                    style={{ transformOrigin: "center", willChange: "transform" }}
+                  >
+                    <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                  </motion.div>
                   <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider group-hover:text-neutral-300">
                     Instructions
                   </div>
                 </div>
-                <Plus className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    // Add instruction handler here
+                  }}
+                  className="h-5 px-2 rounded-full bg-neutral-800/50 hover:bg-neutral-800 flex items-center gap-1.5 group/button"
+                >
+                  <Plus className="w-3 h-3 text-neutral-500 group-hover/button:text-neutral-300" />
+                  <span className="text-xs text-neutral-500 group-hover/button:text-neutral-300">Add instruction</span>
+                </button>
               </button>
-              <div className="text-sm text-neutral-500 pl-6">No instructions added</div>
+              {isInstructionsOpen && (
+                <div className="pl-6">
+                  <div className="text-sm text-neutral-500 transition-all duration-200 transform opacity-0 -translate-y-2 animate-in">
+                    No instructions added
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-6">
@@ -205,14 +230,8 @@ export default function NotebookDetailPage() {
                   <div className="flex items-center gap-2">
                     <motion.div 
                       animate={{ transform: `rotate(${isFilesOpen ? 0 : -90}deg)` }}
-                      transition={{ 
-                        duration: 0.15,
-                        ease: "easeInOut"
-                      }}
-                      style={{ 
-                        transformOrigin: "center",
-                        willChange: "transform"
-                      }}
+                      transition={{ duration: 0.15, ease: "easeInOut" }}
+                      style={{ transformOrigin: "center", willChange: "transform" }}
                     >
                       <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-400" />
                     </motion.div>
@@ -231,75 +250,62 @@ export default function NotebookDetailPage() {
                     <span className="text-xs text-neutral-500 group-hover/button:text-neutral-300">Add file</span>
                   </button>
                 </button>
-                <AnimatePresence mode="wait">
-                  {isFilesOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-1 pl-6 overflow-hidden"
-                    >
-                      {files.map(file => (
-                        <motion.div
-                          key={file.id}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ 
-                            opacity: { duration: 0.2 },
-                            height: { duration: 0.2 },
-                          }}
-                          className="overflow-hidden"
-                        >
-                          <motion.div 
-                            className="flex items-center w-full p-2 rounded-sm hover:bg-white/5 group"
-                            layout
+                {isFilesOpen && (
+                  <div className="pl-6">
+                    {files.length === 0 ? (
+                      <div className="text-sm text-neutral-500 transition-all duration-200 transform opacity-0 -translate-y-2 animate-in">
+                        No files added
+                      </div>
+                    ) : (
+                      <div className="space-y-1 transition-opacity duration-200 opacity-0 animate-in">
+                        {files.map(file => (
+                          <motion.div
+                            key={file.id}
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ 
+                              opacity: { duration: 0.2 },
+                              height: { duration: 0.2 },
+                            }}
+                            className="overflow-hidden"
                           >
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <div className="text-sm text-neutral-300 group-hover:text-neutral-200 truncate">
-                                {file.name}
+                            <motion.div 
+                              className="flex items-center w-full p-2 rounded-sm hover:bg-white/5 group"
+                              layout
+                            >
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <div className="text-sm text-neutral-300 group-hover:text-neutral-200 truncate">
+                                  {file.name}
+                                </div>
                               </div>
-                            </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <button className="p-1 rounded-sm hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <MoreVertical className="w-4 h-4 text-neutral-500 hover:text-neutral-400" />
-                                </button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-48 bg-[#1E1E1E] border-neutral-800">
-                                <DropdownMenuItem className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-300 focus:text-neutral-300 focus:bg-white/5">
-                                  <Download className="w-4 h-4" />
-                                  Download
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => handleRemoveFile(file.id)}
-                                  className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 focus:text-red-400 focus:bg-white/5"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                  Remove
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button className="p-1 rounded-sm hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <MoreVertical className="w-4 h-4 text-neutral-500 hover:text-neutral-400" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48 bg-[#1E1E1E] border-neutral-800">
+                                  <DropdownMenuItem className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-300 focus:text-neutral-300 focus:bg-white/5">
+                                    <Download className="w-4 h-4" />
+                                    Download
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => handleRemoveFile(file.id)}
+                                    className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 focus:text-red-400 focus:bg-white/5"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    Remove
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </motion.div>
                           </motion.div>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <AnimatePresence mode="wait">
-                  {files.length === 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-sm text-neutral-500"
-                    >
-                      No files added
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -337,7 +343,11 @@ export default function NotebookDetailPage() {
                   </button>
                 </button>
                 {isLinksOpen && (
-                  <div className="text-sm text-neutral-500 pl-6">No links added</div>
+                  <div className="pl-6">
+                    <div className="text-sm text-neutral-500 transition-all duration-200 transform opacity-0 -translate-y-2 animate-in">
+                      No links added
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

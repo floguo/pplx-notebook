@@ -16,15 +16,13 @@ interface Notebook {
 export default function NotebookPage() {
   const router = useRouter()
   const [notebooks, setNotebooks] = useState<Notebook[]>([])
+  const [isCreating, setIsCreating] = useState(false)
 
-  const handleCreatePlan = () => {
+  const handleCreateNotebook = async () => {
+    if (isCreating) return
+    setIsCreating(true)
+    
     const id = Math.random().toString(36).substr(2, 9)
-    const newNotebook = {
-      id,
-      title: "Untitled Notebook",
-      createdAt: new Date()
-    }
-    setNotebooks(prev => [...prev, newNotebook])
     router.push(`/notebook/${id}`)
   }
 
@@ -72,8 +70,9 @@ export default function NotebookPage() {
                 ))}
                 <Button
                   variant="outline"
-                  onClick={handleCreatePlan}
-                  className="w-full justify-start gap-2 p-6 text-base bg-[#252525] border-neutral-800 hover:bg-[#2A2A2A] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200"
+                  onClick={handleCreateNotebook}
+                  disabled={isCreating}
+                  className="w-full justify-start gap-2 p-6 text-base bg-[#252525] border-neutral-800 hover:bg-[#2A2A2A] hover:border-neutral-700 text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
                 >
                   <Plus className="w-5 h-5" />
                   Create a Notebook

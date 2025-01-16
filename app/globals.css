@@ -21,3 +21,11 @@ body {
   background: #1A3B41;
   color: #21B8CD;
 }
+
+* {
+  caret-color: #21B8CD;
+}
+
+input, textarea {
+  caret-color: #21B8CD;
+}

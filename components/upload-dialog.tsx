@@ -22,7 +22,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { PDFDocument } from 'pdf-lib'
+import * as pdfjsLib from 'pdfjs-dist'
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
 
 interface UploadDialogProps {
   open: boolean
@@ -95,13 +96,13 @@ export function UploadDialog({
 
   const extractPdfContent = async (file: File): Promise<string> => {
     const arrayBuffer = await file.arrayBuffer()
-    const pdfDoc = await PDFDocument.load(arrayBuffer)
-    const pages = pdfDoc.getPages()
-    
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise
     let content = ''
-    for (const page of pages) {
-      const text = await page.getText()
-      content += text + '\n'
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i)
+      const textContent = await page.getTextContent()
+      content += textContent.items.map((item: any) => item.str).join(' ') + '\n'
     }
     
     return content
@@ -116,13 +117,13 @@ export function UploadDialog({
       uploadedAt: new Date()
     }))
     
+    setIsUploading(true)
     setUploadedFiles(prev => [...prev, ...newFiles])
 
-    for (const [index, file] of acceptedFiles.entries()) {
+    for (let index = 0; index < acceptedFiles.length; index++) {
+      const file = acceptedFiles[index]
       try {
-        setIsUploading(true)
         const content = await extractPdfContent(file)
-        
         const processedFile: ProcessedFile = {
           id: Math.random().toString(36).substr(2, 9),
           name: file.name,
@@ -378,7 +379,7 @@ export function UploadDialog({
                 <div className="h-[300px] overflow-y-auto">
                   {activeTab === 'files' ? renderFileList() : (
                     <div className="h-[300px] flex items-center justify-center text-neutral-500 text-sm">
-                      Add some links to your space below
+                      No links yet. Add one above to get started.
                     </div>
                   )}
                 </div>
